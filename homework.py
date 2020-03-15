@@ -78,13 +78,14 @@ def alphabet() -> dict:
 
 
 def simple_sort(data: List[int]) -> List[list]:
-    for i in range(len(data)):
+    new_data = data.copy()
+    for i in range(len(new_data)):
         lowest_value_index = i
-        for j in range(i + 1, len(data)):
-            if data[j] < data[lowest_value_index]:
+        for j in range(i + 1, len(new_data)):
+            if new_data[j] < new_data[lowest_value_index]:
                 lowest_value_index = j
-        data[i], data[lowest_value_index] = data[lowest_value_index], data[i]
-    return data
+        new_data[i], new_data[lowest_value_index] = new_data[lowest_value_index], new_data[i]
+    return new_data
 
     """
     Sort list of ints without using built-in methods.
@@ -92,4 +93,3 @@ def simple_sort(data: List[int]) -> List[list]:
         simple_sort([2, 9, 6, 7, 3, 2, 1])
         >>> [1, 2, 2, 3, 6, 7, 9]
     """
-    
