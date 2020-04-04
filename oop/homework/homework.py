@@ -293,27 +293,15 @@ class House(Wall, Roof, Window, Door):
         self.__roof = None
         self.__door = None
 
-    def create_wall(self):
-        if (self.width < 0 and self.height < 0):
+    def create_wall(self, width, height):
+        if (self.width <= 0 and self.height <= 0):
             raise ValueError("Value must be not 0")
         if (len(self.__walls) == 4):
             raise ValueError("Our house can not have more than 4 walls")
-        self.__walls.append(Wall(self.width, self.height))
-        
-
-        # Implement method create_wall which will create new wall using class Wall and add it to the __walls list
-        #    it receives parameters width and height
-        #   if width or height eq 0 raise ValueError "Value must be not 0"
-        #  if user have more than 4 walls raise ValueError "Our house can not have more than 4 walls"
-
-
-    # Implement method create_roof which will create new roof using class Roof and assign it to the __roof variable
-    # it receives parameters width, height and roof_type
-    # if width or height eq 0 raise ValueError "Value must be not 0"
-    # Check that we won't have another roof if we already have another one,
-    #        otherwise raise ValueError "The house can not have two roofs"
+        self.__walls.append(Wall(width, height))
+     
     def create_roof(self, width, height, roof_type):
-        if (self.width < 0 and self.height < 0):
+        if (self.width <= 0 and self.height <= 0):
             raise ValueError("Value must be not 0")        
         if self.__roof:
             raise ValueError("The house can not have two roofs")
@@ -322,15 +310,14 @@ class House(Wall, Roof, Window, Door):
         
 
     def create_window(self, width, height):
-        if (self.width < 0 and self.height < 0):
+        if (self.width <= 0 and self.height <= 0):
             raise ValueError("Value must be not 0")
-        window = Window(width, height)
-        self.__windows.append(window)
+        self.__windows.append( Window(width, height))
         
 
 
     def create_door(self, width, height):
-        if (self.width < 0 and self.height < 0):
+        if (self.width <= 0 and self.height <= 0):
             raise ValueError("Value must be not 0")
         if self.__door:
             raise ValueError("The house can not have two doors")
