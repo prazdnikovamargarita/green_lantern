@@ -75,13 +75,9 @@ def task_4_update_customer(con):
 
     """
     sql = """UPDATE customers SET customername = 'Johnny Depp' ORDER BY customerid = 1;"""
-    sql1 = """SELECT * FROM customers """
     cursor = con.cursor
     cursor.execute(sql)
-    cursor.execute(sql1)    
-    result = cursor.fetchall ()
     con.commit()
-    return result
 
 
 
@@ -93,13 +89,10 @@ def task_5_delete_the_last_customer(con) -> None:
         con: psycopg connection
     """
     sql = """DELETE customers WHERE customerid = (SELECT MAX(customerid) FROM customers );"""
-    sql1 = """SELECT * FROM customers """
     cursor = con.cursor
     cursor.execute(sql)    
-    cursor.execute(sql1)  
-    result = cursor.fetchall ()
     con.commit()
-    return result
+
 
 def task_6_list_all_supplier_countries(cur) -> list:
     """
@@ -111,10 +104,9 @@ def task_6_list_all_supplier_countries(cur) -> list:
     Returns: 29 records
 
     """
-    sql = """SELECT city from suppliers ORDER BY city ASC;"""
+    sql = """SELECT country from suppliers;"""
     cursor = cur.cursor
     cursor.execute(sql)    
-
     return cursor.fetchall() 
     
 
