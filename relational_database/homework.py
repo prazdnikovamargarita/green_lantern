@@ -138,7 +138,7 @@ def task_8_count_customers_by_city(cur):
     Returns: 69 records in descending order
 
     """
-    sql = """SELECT count (customername), city from customers GROUP BY city;"""
+    sql = """SELECT count (CustomerID), city from customers GROUP BY city;"""
     cursor = cur.cursor
     cursor.execute(sql)    
     return cursor.fetchall ()
@@ -153,7 +153,8 @@ def task_9_count_customers_by_country_with_than_10_customers(cur):
 
     Returns: 3 records
     """
-    sql = """SELECT count (customername), city from customers WHERE count (customername) > 10  GROUP BY city HAVING count (customername) > 10;"""
+    sql = """SELECT COUNT(customerid), country FROM customers GROUP BY country
+	     HAVING COUNT(customerid) > 10 ORDER BY COUNT(customerid) DESC, country;"""
     cursor = cur.cursor
     cursor.execute(sql)    
     return cursor.fetchall()
@@ -166,7 +167,7 @@ def task_10_list_first_10_customers(cur):
 
     Results: 10 records
     """
-    sql = """SELECT * from customers ORDER BY customeridcustomerid  LIMIT 10;"""
+    sql = """SELECT * from customers ORDER BY customerid LIMIT 10;"""
     cursor = cur.cursor
     cursor.execute(sql)    
     return cursor.fetchall()
@@ -181,7 +182,7 @@ def task_11_list_customers_starting_from_11th(cur):
 
     Returns: 11 records
     """
-    sql = """SELECT * from customers ORDER BY customeridcustomerid  WHERE customeridcustomerid > 11;"""
+    sql = """SELECT * FROM customers ORDER BY customerid OFFSET 11;"""
     cursor = cur.cursor
     cursor.execute(sql)    
     return cursor.fetchall()
@@ -196,7 +197,7 @@ def task_12_list_suppliers_from_specified_countries(cur):
 
     Returns: 8 records
     """
-    sql = """SELECT * from suppliers ORDER BY customeridcustomerid  WHERE city = 'USA' OR city = 'UK' OR city = 'Japan';"""
+    sql = """SELECT * from suppliers ORDER BY customerid  WHERE country IN ('USA', 'UK', 'Japan');"""
     cursor = cur.cursor
     cursor.execute(sql)    
     return cursor.fetchall()
@@ -212,10 +213,11 @@ def task_13_list_products_from_sweden_suppliers(cur):
 
     Returns: 3 records
     """
-    sql = """SELECT suppliers .city, products.ProductName,  products.SupplierID,  products.CategoryID
+    sql = """SELECT products.ProductName
             FROM suppliers
             LEFT JOIN  products
-            WHERE suppliers .city = 'Sweden';""" 
+	    USING(supplierid)
+            WHERE suppliers.city = 'Sweden';""" 
     cursor = cur.cursor
     cursor.execute(sql)    
     return cursor.fetchall()
@@ -231,10 +233,10 @@ def task_14_list_products_with_supplier_information(cur):
 
     Returns: 77 records
     """
-    sql = """SELECT *
-            FROM products
-            JOIN  suppliers
-            ON products.SupplierID =  suppliers.SupplierID;""" 
+    sql = """SELECT productid, productname, unit, price, country, city, suppliername 
+	     FROM products 
+	     INNER JOIN suppliers 
+             USING(supplierid);""" 
     cursor = cur.cursor
     cursor.execute(sql)    
     return cursor.fetchall()
@@ -250,10 +252,8 @@ def task_15_list_customers_with_any_order_or_not(cur):
 
     Returns: 213 records
     """
-    sql = """SELECT *
-            FROM products
-            JOIN  suppliers
-            ON products.CustomerID =  suppliers.CustomerID;""" 
+    sql = """SELECT customername, contactname, country, orderid
+       	     FROM customers, orders WHERE  customers.customerid = orders.customerid;""" 
     cursor = cur.cursor
     cursor.execute(sql)    
     return cursor.fetchall()
@@ -268,11 +268,8 @@ def task_16_match_all_customers_and_suppliers_by_country(cur):
 
     Returns: 194 records
     """
-    sql = """SELECT *
-            FROM products
-            JOIN  suppliers
-            ON products.country =  suppliers.country
-            ORDER BY country;""" 
+    sql = """SELECT customers.customername, customers.address, customers.country, suppliers.country, suppliers.suppliername
+    FROM customers FULL JOIN suppliers ON suppliers.country = customers.country ORDER BY customers.country, suppliers.country ;""" 
     cursor = cur.cursor
     cursor.execute(sql)    
     return cursor.fetchall()
