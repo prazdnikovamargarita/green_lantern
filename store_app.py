@@ -56,7 +56,11 @@ def get_goods():
 def update_goods():
     db = inject.instance('DB')
     successful_update, update_with_error = db.goods.update_goods(request.json)
-    return jsonify({'successfully_updated': successful_update, 'errors': {'No such id in goods': update_with_error}})
+    return jsonify(
+        {
+            'successfully_updated': successful_update, 
+            'errors': {'No such id in goods': update_with_error}
+            })
 
 @app.route('/store', methods=['POST'])
 def create_store():

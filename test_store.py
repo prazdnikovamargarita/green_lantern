@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, request
-
+from fake_storage import FakeStorage
+from store_app import app 
 import inject
 
 def configure_test(binder):
@@ -37,39 +38,45 @@ class TestUsers(Initializer):
             json={'name':'John Doe'}
         )
         user_id = resp.json['user_id']
-        resp = self.client.get(f'/users/{user_id}')
+        resp = self.client.get('/users/%{user_id}'%(user_id))
         assert resp.status_code == 200
         assert resp.json == {'name':'John Doe'}
 
     def test_get_unexistent_user(self):
-        resp = self.client.get(f'/users/1')
+        
+        resp = self.client.post(
+            '/users',
+            json={'name':'John Doe'}
+        )
+        user_id = resp.json['user_id']
+        resp = self.client.get('/users/3')
         assert resp.status_code == 404
-        assert resp.json == {'error':'No such user_id 1'}
+        assert resp.json == {'error':'No such user_id 3 '}
     def test_successful_update_user(self):
         resp = self.client.post(
             '/users',
             json={'name':'John Doe'}
         )
-        user_id = resp.json['user_id']
+        u = resp.json['user_id']
         resp = self.client.put(
-            f'/users/{<user_id>}',
+            '/users/%{user_id}'%(user_id),
             json={'name':'Johanna Doe'}
         )
         assert resp.status_code == 201
         assert resp.json== {'status':'success'}
     
-    def test_get_unexistent_user(self):
+    def test_post_unexistent_user(self):
         resp = self.client.post(
             '/users',
             json={'name':'John Doe'}
         )
         user_id = resp.json['user_id']
         resp = self.client.put(
-            '/users/1',
+            '/users/3',
             json={'name':'Johanna Doe'}
         )
         assert resp.status_code == 404
-        assert resp.json == {'error':'No such user_id 1'}
+        assert resp.json == {'error':'No such user_id 3'}
 
 class TestGoods(Initializer):
     def test_create_new(self):
@@ -110,7 +117,7 @@ class TestGoods(Initializer):
                   {'name': 'Milka&Daim', 'price': 20},
                   {'name': 'M&Ms', 'price': 21})
         )
-        resp = self.client.get(f'/goods')
+        resp = self.client.get(f'/{%goods}')
         assert resp.status_code == 200
         assert resp.json == [{'name': 'Chocolate_bar', 'price': 10, 'id': 1},
                              {'name': 'Snickers', 'price': 19, 'id': 2},
@@ -137,9 +144,9 @@ class TestGoods(Initializer):
                 {'name': 'Milka&Daim', 'price': 20, 'id': 9},
                 {'name': 'M&Ms', 'price': 21, 'id': 10})
         )
-        resp = self.client.put(f'/goods',
+        resp = self.client.put('/{goods}',
                                json=({'name': 'Chocolate_bar', 'price': 1, 'id': 1},
-                                     {'name': 'Snickers', 'price': 19, 'id': 2},
+                                     {'fname': 'Snickers', 'price': 19, 'id': 2},
                                      {'name': 'Mars', 'price': 9.5, 'id': 3},
                                      {'name': 'Kinder_Chocolate', 'price': 26, 'id': 4},
                                      {'name': 'Nesquik', 'price': 25, 'id': 5},
@@ -164,96 +171,67 @@ class TestShops(Initializer):
         assert resp.status_code == 201
         assert resp.json == {'store_id': 1}
 
-    def test_successful_get_user(self):
-        resp = self.client.post(
-            '/users',
-            json={'name':'John Doe'}
-        )
-        user_id = resp.json['user_id']
-        resp = self.client.get(f'/users/{user_id}')
-        assert resp.status_code == 200
-        assert resp.json == {'name':'John Doe'}
-
-    def test_get_unexistent_user(self):
-        resp = self.client.get(f'/users/1')
-        assert resp.status_code == 404
-        assert resp.json == {'error':'No such user_id 1'}
-    def test_successful_update_user(self):
-        resp = self.client.post(
-            '/users',
-            json={'name':'John Doe'}
-        )
-        user_id = resp.json['user_id']
-        resp = self.client.put(
-            f'/users/{<user_id>}',
-            json={'name':'Johanna Doe'}
-        )
-        assert resp.status_code == 201
-        assert resp.json== {'status':'success'}
-    
-    def test_get_unexistent_user(self):
-        resp = self.client.post(
-            '/users',
-            json={'name':'John Doe'}
-        )
-        user_id = resp.json['user_id']
-        resp = self.client.put(
-            '/users/1',
-            json={'name':'Johanna Doe'}
-        )
-        assert resp.status_code == 404
-        assert resp.json == {'error':'No such user_id 1'}
-        resp = self.client.post(
-            '/store',
-            json={'name': 'Local Taste', 'location': 'Lviv', 'manager_id': 2}
-        )
-        assert resp.json == {'store_id': 2}
-
+   
     def test_successful_get_store(self):
+
         resp = self.client.post('/users',
                                 json={"name": "Mark Miller"})
         resp = self.client.post('/users',
                                 json={"name": "Walter White"})
 
+        user_id = resp.json['user_id']
         resp = self.client.post(
             '/store',
-            json={'name': 'Mad Cow', 'location': 'Lviv', 'manager_id': 2}
+            json={'name': 'Mad Cow', 'location': 'Lviv', 'manager_id': f'%{user_id}'}
         )
         store_id = resp.json['store_id']
         resp = self.client.get(f'/store/{store_id}')
         assert resp.status_code == 200
         assert resp.json == {'name': 'Mad Cow', 'location': 'Lviv', 'manager_id': 2}
 
+
     def test_get_unexistent_store(self):
-        resp = self.client.get(f'/store/1')
+        resp = self.client.post(
+            '/store',
+            json={'name': 'Mad Cow', 'location': 'Lviv', 'manager_id': 1}
+        )
+        resp = self.client.get('/store/1')
         assert resp.status_code == 404
-        assert resp.json == {'error': 'No such store_id 1'}
+        assert resp.json == {'error': 'No such store_id 3'}
 
     def test_successful_update_store(self):
         resp = self.client.post('/users',
                                 json={"name": "Mark Miller"})
         resp = self.client.post('/users',
                                 json={"name": "Walter White"})
+        user_id = resp.json['user_id']
         resp = self.client.post(
             '/store',
-            json={'name': 'Mad Cow', 'location': 'Lviv', 'manager_id': 2}
+            json={'name': 'Mad Cow', 'location': 'Lviv', 'manager_id': f'%{user_id}'}
         )
         store_id = resp.json['store_id']
         resp = self.client.put(
-            f'/store/{store_id}',
+            f'/store/f{store_id}',
             json={'name': 'Lazy Cat', 'location': 'Lviv', 'manager_id': 2}
         )
         assert resp.status_code == 200
         assert resp.json == {'status': 'success'}
 
     def test_unexistent_update_store(self):
+        
         resp = self.client.post('/users',
                                 json={"name": "Mark Miller"})
 
         resp = self.client.put(
-            f'/store/1',
-            json={'name': 'Local Taste', 'location': 'Lviv', 'manager_id': 1}
+            '/store/3',
+            json={'name': 'Local Taste', 'location': 'Lviv', 'manager_id': 4}
         )
+        resp = self.client.post(
+            '/store',
+            json={'name': 'Mad Cow', 'location': 'Lviv', 'manager_id': 4}
+        )
+
         assert resp.status_code == 404
-        assert resp.json == {'error': 'No such store_id 1'}
+        assert resp.json == {'error': 'No such store_id 3'}
+	assert resp.json == {'error': 'No such user_id 4'}
 
