@@ -38,7 +38,7 @@ class TestUsers(Initializer):
             json={'name':'John Doe'}
         )
         user_id = resp.json['user_id']
-        resp = self.client.get('/users/%{user_id}'%(user_id))
+        resp = self.client.get(f'/users/{user_id}')
         assert resp.status_code == 200
         assert resp.json == {'name':'John Doe'}
 
@@ -65,7 +65,7 @@ class TestUsers(Initializer):
         assert resp.status_code == 201
         assert resp.json== {'status':'success'}
     
-    def test_post_unexistent_user(self):
+    def test_update_unexistent_user(self):
         resp = self.client.post(
             '/users',
             json={'name':'John Doe'}
@@ -234,4 +234,3 @@ class TestShops(Initializer):
         assert resp.status_code == 404
         assert resp.json == {'error': 'No such store_id 3'}
 	assert resp.json == {'error': 'No such user_id 4'}
-
