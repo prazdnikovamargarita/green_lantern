@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 from abc import ABC, abstractmethod
 
 
@@ -54,13 +53,13 @@ class Cat:
         if (product == "fodder"):
             self._increase_saturation_level(10)
 
-        if (product == "milk"):
+        elif (product == "milk"):
+            self._increase_saturation_level(2)
+
+        elif (product == "apple"):
             self._increase_saturation_level(5)
 
-        if (product == "apple"):
-            self._increase_saturation_level(5)
-
-        pass
+        
 
     def _reduce_saturation_level(self, value):
         """Implement private methods _increase_saturation_level and _reduce_saturation_level
@@ -71,48 +70,46 @@ class Cat:
 
     def _increase_saturation_level(self, value):
         self.saturation_level = min(self.saturation_level + value, 100)
-        pass
 
     def _set_average_speed(self, age):
         self.average_speed = self._set_average_speed
         self.age = age
         if (age <= 7):
             return 12
-        if (age > 7 and age <= 10):
+        if (age <= 10):
             return 9
-        if (age > 10):
+        if ( age > 10):
             return 6
-        pass
 
     def run(self, hours):
         ran_km = hours * self.average_speed
         if (ran_km < 25):
-            return self._reduce_saturation_level(2)
+            self._reduce_saturation_level(2)
 
         elif (ran_km <= 50 and hours * self.average_speed > 25):
-            return self._reduce_saturation_level(5)
+            self._reduce_saturation_level(5)
         elif ran_km <= 100 and hours * self.average_speed > 50:
-            return self._reduce_saturation_level(15)
+            self._reduce_saturation_level(15)
         elif ran_km <= 200 and hours * self.average_speed > 10:
-            return self._reduce_saturation_level(25)
+            self._reduce_saturation_level(25)
         else:
-            return self._reduce_saturation_level(50)
+            self._reduce_saturation_level(50)
         return f"Your cat ran {ran_km} km"
-        pass
+        
     @property
     def get_saturation_level(self):
         saturation_level = self.get_saturation_level
-        saturation_level = 50
         
         if (saturation_level == 0):
             return print("Your cat is dead ")
-        pass
+        else:
+            return self.saturation_level
+        
 
     def get_average_speed(self):
-        average_speed = self.get_average_speed
-        return average_speed
+        return self.average_speed
     
-        pass
+        
 
 
 class Cheetah(Cat):
@@ -120,9 +117,9 @@ class Cheetah(Cat):
         super().__init__(age)
     def eat(self, product):
         if (product == "gazelle"):
-            return self._increase_saturation_level(30)
+            self._increase_saturation_level(30)
         if (product == "rabbit"):
-            return self._increase_saturation_level(15)
+            self._increase_saturation_level(15)
 
     def _set_average_speed(self, age):
         if (self.age <= 5):
@@ -131,7 +128,6 @@ class Cheetah(Cat):
             return 75
         if (self.age > 15):
             return 40
-        pass
 
     """
     * Inherit from class Cat
@@ -167,18 +163,17 @@ class Wall(ABC):
         self.width = width
         self.height = height
 
-        pass
+        
 
-    def wall_square(self, width, height):
-        return 2 * (width + height)
-        pass
+    def wall_square(self):
+        return self.width * self.height
 
-    def number_of_rolls_of_wallpaper(self, roll_width_m, roll_length_m, width, height):
-        quantity_width = width / roll_width_m
-        quantity_height = height / roll_width_m
+    def number_of_rolls_of_wallpaper(self, roll_width_m, roll_length_m):
+        quantity_width = self.width / roll_width_m
+        quantity_height = self.height / roll_width_m
         return quantity_width / quantity_height
 
-        pass
+        
 
 
 class Roof:
@@ -194,18 +189,17 @@ class Roof:
 
     def __init__(self, width, height, roof_type):
         self.width = width
-        self.width = height
+        self.height = height
         self.roof_type = roof_type
-        pass
+        
 
-    def roof_square(self, width, height, roof_type):
-        if (roof_type == "gable"):
-            return height ** 2
-        elif (roof_type == "single-pitch"):
-            return width * height
+    def roof_square(self):
+        if (self.roof_type == "gable"):
+            return self.height * self.width * 2
+        elif (self.roof_type == "single-pitch"):
+            return self.height * self.width
         else:
             raise ValueError("Sorry there is only two types of roofs")
-        pass
 
 
 class Window:
@@ -218,12 +212,12 @@ class Window:
 
     def __init__(self, width, height):
         self.width = width
-        self.width = height
-        pass
+        self.height = height
+        
 
-    def window_square(self, width, height):
-        return width * height
-        pass
+    def window_square(self):
+        return self.width * self.height
+
 
 
 class Door:
@@ -248,35 +242,34 @@ class Door:
         self.width = width
         self.height = height
         self.wood_price = 10
-        self.price = 3
-        pass
+        self.metal_price = 3
+        
 
-    def door_square(self, width, height, material_value, wood_price, metal_price):
-        square = width * height
+    def door_square(self, material_value):
+        square = self.width * self.height
         self.material_value = input(material_value)
         if material_value == "wood":
-            square = wood_price * square
+            square = self.wood_price * square
         elif material_value == "metal":
-            square = metal_price * square
+            square = self.metal_price * square
         else:
             raise ValueError("Sorry we don't have such material")
 
-        pass
 
     def door_price(self):
         pass
+
 
     def update_wood_price(self, wood_price):
         new_wood_price = input()
         wood_price = new_wood_price
 
-        pass
+ 
 
     def update_metal_price(self, metal_price):
         new_metal_price = input()
         metal_price = new_metal_price
-        pass
-
+        
 
 class House(Wall, Roof, Window, Door):
     """
@@ -343,7 +336,6 @@ class House(Wall, Roof, Window, Door):
         self.__windows = []
         self.__roof = None
         self.__door = None
-        pass
 
     def create_wall(self,width, height):
 
@@ -360,7 +352,6 @@ class House(Wall, Roof, Window, Door):
         #   if width or height eq 0 raise ValueError "Value must be not 0"
         #  if user have more than 4 walls raise ValueError "Our house can not have more than 4 walls"
 
-        pass
 
     # Implement method create_roof which will create new roof using class Roof and assign it to the __roof variable
     # it receives parameters width, height and roof_type
@@ -375,7 +366,6 @@ class House(Wall, Roof, Window, Door):
 
         if (self.width < 0 and self.height < 0):
             raise ValueError("Value must be not 0")
-        pass
 
     def create_window(self, width, height):
         window = Window(width, height)
@@ -383,7 +373,6 @@ class House(Wall, Roof, Window, Door):
         if (self.width < 0 and self.height < 0):
             raise ValueError("Value must be not 0")
 
-        pass
 
     def create_door(self, width, height):
         self.door = Door(width, height, 3, 3)
@@ -392,34 +381,28 @@ class House(Wall, Roof, Window, Door):
 
         if (self.width < 0 and self.height < 0):
             raise ValueError("Value must be not 0")
-        pass
 
     def get_count_of_walls(self):
         return len(self.__walls)
 
     def get_count_of_windows(self):
         return len(self.__windows)
-        pass
 
     def get_door_price(self, roof_type):
         return self.door_price()
-        pass
 
     def update_wood_price(self):
         return self.update_wood_price
-        pass
+        
 
     def update_metal_price(self, Door):
         return self.update_metal_price
-        pass
 
     def get_roof_square(self):
         return self.roof_square
-        pass
 
     def get_walls_square(self):
         return sum(wall.wall_square() for wall in self.__walls)
-        pass
 
     def get_windows_square(self):
         return sum(window.window_square() for window in self.__windows)
@@ -427,7 +410,7 @@ class House(Wall, Roof, Window, Door):
 
     def get_door_square(self, material, wood_price, metal_price):
         return self.__door.door_square()
-        pass
+        
 
     def get_number_of_rolls_of_wallpapers(self, roll_width_m, roll_length_m):
 
@@ -438,101 +421,4 @@ class House(Wall, Roof, Window, Door):
     def get_room_square(self):
 
         return self.get_walls_square() - (self.get_door_square(3, 3, 3) + self.get_windows_square())
-        pass
-=======
-"""
-This is a list of functions that should be completed.
-"""
-
-from typing import Any
-from typing import List
-
-
-class OurAwesomeException(Exception):
-    pass
-
-
-def is_two_object_has_same_value(first: Any, second: Any) -> bool:
-    return first == second
-
-    
-
-
-def is_two_objects_has_same_type(first: Any, second: Any) -> bool:
-
-    return type(first) == type(second)
-    
-
-
-def is_two_objects_is_the_same_objects(first: Any, second: Any) -> bool:
-
-    return first is second
-
-
-
-def multiple_ints(first_value: int, second_value: int) -> int:
-    if(isinstance(first_value, bool)  & isinstance(second_value, bool) ):
-        raise TypeError
-   
-    elif (isinstance(first_value, int)  & isinstance(second_value, int) ):
-        return first_value * second_value
-    else:
-        raise TypeError
-    
-    
-
-
-def multiple_ints_with_conversion(first_value: Any, second_value: Any) -> int:
-    try:
-        return int (first_value) * int(second_value)
-    except (ValueError, TypeError):
-        raise ValueError
         
-    
-
-
-def is_word_in_text(word: str, text: str) -> bool:
-
-    return word in text
-
-
-def some_loop_exercise() -> list:
-    
-    return [i for i in range(0,13) if ((i!=6) & (i!=7))]
-    
-
-
-def remove_from_list_all_negative_numbers(data: List[int]) -> list:
-  
-    return [data[i] for i in range(len(data)) if (data[i]>0)]
-
-
-def alphabet() -> dict:
-
-    return {i : chr(i + 96) for i in range (1,27)} 
-    """
-    Create dict which keys are alphabetic characters. And values their number in alphabet
-    Notes You could see an implementaion of this one in test, but create another one
-    Examples:
-        alphabet()
-        >>> {"a": 1, "b": 2 ...}
-    """
-
-
-def simple_sort(data: List[int]) -> List[list]:
-    new_data = data.copy()
-    for i in range(len(new_data)):
-        lowest_value_index = i
-        for j in range(i + 1, len(new_data)):
-            if new_data[j] < new_data[lowest_value_index]:
-                lowest_value_index = j
-        new_data[i], new_data[lowest_value_index] = new_data[lowest_value_index], new_data[i]
-    return new_data
-
-    """
-    Sort list of ints without using built-in methods.
-    Examples:
-        simple_sort([2, 9, 6, 7, 3, 2, 1])
-        >>> [1, 2, 2, 3, 6, 7, 9]
-    """
->>>>>>> 5f72765d15e72acfb8ab0a818df832a39c14d294
