@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 class="title">
+  Welcome, {{ user }}!
+  Your email is {{ email }}
+</h1>
+<h3>Click <a href="{{ url_for('main.goods_list') }}"> HERE </a> to see all our price list</h3>
+{% endblock %}

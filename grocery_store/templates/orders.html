@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1 class="title">
+    Orders
+</h1>
+<table align="center" class='table table-striped'>
+    <tr>
+        <th>Stores</th>
+        <th>Date</th>
+        <th>Good</th>
+        <th>Price</th>
+    </tr>
+    {% for order in orders %}
+    <tr>
+        <td>{{ order['store'] }}</td>
+        <td>{{ order['date']}}</td>
+        <td></td>
+        <td></td>
+        {% for key, value in order['goods'].items() %}
+            <tr>
+                <td></td>
+                <td></td>
+                <td>{{ key }}</td>
+                <td>{{ value }}</td>
+            </tr>
+        {% endfor %}
+        <tr>
+            <td></td>
+            <td></td>
+            <td><b><span class="colortext">Order sum</span></b></td>
+            <td><b>{{ order['price'] }}</b></td>
+        </tr>
+    </tr>
+    {% endfor %}
+    <tr>
+        <td></td>
+        <td></td>
+        <td><b><span class="colortext">Total sum</span></b></td>
+        <td><b>{{ totalsum }}</b></td>
+    </tr>
+</table>
+{% endblock %} 
